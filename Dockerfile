@@ -28,8 +28,6 @@ ENV PORT=8080 \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-VOLUME ["/data"]
-
 CMD ["python", "-m", "uvicorn", "app:app", \
      "--host", "0.0.0.0", \
      "--port", "8080", \
