@@ -1,0 +1,70 @@
+version: '3.9'
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: synora-app
+    restart: unless-stopped
+    environment:
+      PORT: "8080"
+      SYNORA_DB: /data/synora.db
+      SYNORA_BACKUP_DIR: /data/backups
+      SECRET_KEY:          ${SECRET_KEY:?SECRET_KEY must be set}
+      MSG_ENC_KEY:         ${MSG_ENC_KEY:?MSG_ENC_KEY must be set (64-char hex)}
+      SYNORA_ADMIN_KEY:    ${SYNORA_ADMIN_KEY:-}
+      SYNORA_ORIGINS:      ${SYNORA_ORIGINS:-http://localhost:80}
+      SMTP_HOST:           ${SMTP_HOST:-}
+      SMTP_PORT:           ${SMTP_PORT:-587}
+      SMTP_USER:           ${SMTP_USER:-}
+      SMTP_PASS:           ${SMTP_PASS:-}
+      SMTP_FROM:           ${SMTP_FROM:-noreply@synora.app}
+      GOOGLE_SCRIPT_URL:   ${GOOGLE_SCRIPT_URL:-}
+      SYNORA_BACKUP_INTERVAL_H:  ${SYNORA_BACKUP_INTERVAL_H:-6}
+      SYNORA_BACKUP_KEEP_DAYS:   ${SYNORA_BACKUP_KEEP_DAYS:-30}
+    volumes:
+      - synora-data:/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    expose:
+      - "8080"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: synora-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  synora-data:
+    driver: local
+
+networks:
+  internal:
+    driver: bridge

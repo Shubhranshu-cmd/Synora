@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0d0d12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Synora — Encrypted messaging and calling. Private by design.">
+<title>Synora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/synora.css">
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8463414369456138"
+     crossorigin="anonymous"></script>
+
+<link rel="manifest" href="/static/manifest.json">
+<link rel="icon" href="/static/icons/icon-192.svg" type="image/png">
+<link rel="apple-touch-icon" href="/static/icons/icon-192.svg">
+</head>
+<body>
+
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 36 36" fill="none">
+          <path d="M18 4C10.268 4 4 10.268 4 18s6.268 14 14 14 14-6.268 14-14S25.732 4 18 4z" fill="rgba(255,255,255,0.1)"/>
+          <path d="M13 14h10M13 18h7M13 22h5" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="26" cy="24" r="5" fill="#9F67FF"/>
+          <path d="M24 24l1.5 1.5L28 22" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1>Synora</h1>
+      <p>Private · Encrypted · Yours</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchTab('register')">Create Account</button>
+    </div>
+
+    <div id="login-form">
+      <div class="fg">
+        <label>Synora Number</label>
+        <input id="l-num" type="tel" placeholder="Enter your 7–10 digit number" maxlength="11" autocomplete="username">
+      </div>
+      <div class="fg">
+        <label>Password</label>
+        <input id="l-pw" type="password" placeholder="Your password" autocomplete="current-password">
+      </div>
+      <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign In</button>
+    </div>
+
+    <div id="register-form" style="display:none">
+      <div class="fg">
+        <label>Your Name</label>
+        <input id="r-name" type="text" placeholder="e.g. Shubhranshu" maxlength="50" autocomplete="name">
+      </div>
+      <div class="fg">
+        <label>Password</label>
+        <input id="r-pw" type="password" placeholder="At least 6 characters" autocomplete="new-password">
+      </div>
+      <div class="fg">
+        <label>Confirm Password</label>
+        <input id="r-pw2" type="password" placeholder="Repeat your password" autocomplete="new-password">
+      </div>
+      <button class="btn-primary" id="reg-btn" onclick="doRegister()">Create Account</button>
+    </div>
+
+    <div id="auth-err" class="auth-err"></div>
+    <div class="auth-info">
+      🔒 End-to-end encrypted · Keys never leave your device<br>
+      Synora generates your unique number automatically
+    </div>
+  </div>
+</div>
+
+<div class="footer-bar" style="display:none">
+  Built with ♥ by Shubhranshu &nbsp;·&nbsp;
+  <a href="mailto:yshubhranshu746@gmail.com">yshubhranshu746@gmail.com</a><br>
+  <span style="font-size:11px;opacity:0.7">
+    Love Synora🜁?
+    <a href="https://drive.google.com/drive/folders/1WJSZLhkBEDu1QZO-YEMkLqa4k8ttb5NI?usp=drive_link" onclick="PrivacyPolicy(event)">Privacy Policy</a>
+    — privacy policy: <span id="privacypolicy-num" style="cursor:pointer;color:var(--accent2)" onclick="openPrivacyPolicy()">View</span>
+  </span>
+</div>
+
+<div id="app">
+  <div class="layout">
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-head">
+        <div class="my-av" id="my-av" onclick="showProfile()" title="My profile"></div>
+        <div>
+          <div class="sb-title">Synora</div>
+          <div id="my-name-txt" style="font-size:11px;color:var(--text3);margin-top:-2px"></div>
+        </div>
+        <div class="hdr-icons">
+          <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" id="theme-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+          <button class="icon-btn" onclick="showAddContact()" title="Add contact (by Synora number)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/>
+              <line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="srch-bar">
+        <div class="srch-wrap">
+          <span class="srch-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </span>
+          <input type="search" id="srch-inp" placeholder="Search or enter number…"
+            oninput="filterContacts(this.value)" onfocus="filterContacts(this.value)"
+            onblur="setTimeout(hideLookup,220)" autocomplete="off">
+          <div class="lookup-drop" id="lookup-drop"></div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchMainTab('chats')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          Chats
+        </button>
+        <button class="tab-btn" onclick="switchMainTab('calls')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.12 6.12l.96-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          Calls
+        </button>
+      </div>
+
+      <div class="clist" id="clist"></div>
+
+      <div class="clist" id="calls-list" style="display:none"></div>    
+
+      <div class="sb-ad-wrap" id="sb-ad-wrap">
+        <div class="sb-ad-label">Sponsored</div>
+        <ins class="adsbygoogle sb-ad-unit"
+             data-ad-client="ca-pub-8463414369456138"
+             data-ad-slot="9975224217"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <div style="padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0">
+        <div style="font-size:11px;color:var(--text3);line-height:1.8;text-align:center">
+          <a href="mailto:yshubhranshu746@gmail.com" style="color:var(--accent2);text-decoration:none">yshubhranshu746@gmail.com</a><br>
+          <span style="opacity:0.6">☕ <span style="cursor:pointer;text-decoration:underline" onclick="PrivacyPolicy()">Privacy Policy</span></span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="chat-panel">
+
+      <div class="no-chat" id="no-chat">
+        <div class="nc-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <h3>Welcome to Synora</h3>
+        <p>Select a conversation or<br>add someone using their Synora number</p>
+      </div>
+
+      <div id="active-chat" style="display:none;flex-direction:column;flex:1;min-height:0">
+
+        <div class="ch-head">
+          <button class="back-btn" onclick="closeChatMobile()" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <div class="av" id="ch-av" style="width:40px;height:40px;font-size:15px;flex-shrink:0"></div>
+          <div class="peer-info" onclick="showPeerProfile()">
+            <div class="peer-name" id="ch-name"></div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <span style="font-size:11px;color:var(--text3)" id="ch-number"></span>
+              <span id="ch-st" class="peer-st"></span>
+            </div>
+          </div>
+          <div class="chat-acts">
+            <button class="icon-btn" onclick="startCall('voice')" title="Voice call">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.38 2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.12 6.12l.96-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </button>
+            <button class="icon-btn" onclick="startCall('video')" title="Video call">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="23 7 16 12 23 17 23 7"/>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+              </svg>
+            </button>
+            <button class="icon-btn" onclick="doSearch()" title="Search messages">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </button>
+            <button class="icon-btn" onclick="openReportModal()" title="Report user" style="color:var(--text3)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                <line x1="4" y1="22" x2="4" y2="15"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="srch-res" id="srch-res"></div>
+
+        <div id="load-more-wrap" style="display:none;text-align:center;padding:8px 0">
+          <button class="load-more-btn" id="load-more-btn" onclick="loadOlderMessages()">
+            Load older messages
+          </button>
+        </div>
+
+        <div class="msgs" id="msgs"></div>
+
+        <div class="typ-ind" id="typ-ind"></div>
+
+        <div class="inp-area">
+          <textarea class="msg-inp" id="msg-inp" rows="1"
+            placeholder="Message…"
+            oninput="handleTyping()"
+            onkeydown="handleKey(event)"></textarea>
+          <button class="send-btn" onclick="sendMessage()" aria-label="Send">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div class="moverlay" id="ac-modal" onclick="if(event.target===this)closeModal('ac-modal')">
+  <div class="modal">
+    <h3>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        style="width:18px;height:18px;vertical-align:-3px;margin-right:8px;color:var(--accent2)">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="8.5" cy="7" r="4"/>
+        <line x1="20" y1="8" x2="20" y2="14"/>
+        <line x1="23" y1="11" x2="17" y2="11"/>
+      </svg>
+      Save Synora Number
+    </h3>
+    <div id="ac-err" class="m-err"></div>
+    <input id="ac-num"  type="tel"  placeholder="Synora number (7–10 digits)" maxlength="11" autocomplete="off">
+    <input id="ac-name" type="text" placeholder="Name (how you know them)" maxlength="50">
+    <div class="m-btns">
+      <button class="btn-cancel" onclick="closeModal('ac-modal')">Cancel</button>
+      <button class="btn-ok" onclick="addContact()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="call-screen">
+  <div class="call-bg"></div>
+
+  <video id="remote-video" autoplay playsinline></video>
+  <video id="local-video"  autoplay playsinline muted></video>
+
+  <div class="call-topbar">
+    <div class="call-topbar-timer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07"/>
+        <circle cx="12" cy="12" r="7"/>
+        <polyline points="12 9 12 12 14 13"/>
+      </svg>
+      <span id="call-tmr-top">00:00</span>
+    </div>
+  </div>
+
+  <div class="call-top">
+    <div class="call-av" id="call-av"></div>
+    <div class="call-nm" id="call-nm"></div>
+    <div class="call-number" id="call-num-lbl"></div>
+    <div class="call-st" id="call-st">Calling…</div>
+  </div>
+
+  <div class="call-actions">
+    <div class="call-grid">
+      <button class="cg-btn" title="Add call" onclick="toast('Conference calls coming soon','')">
+        <div class="cg-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="8.5" cy="7" r="4"/>
+            <line x1="20" y1="8" x2="20" y2="14"/>
+            <line x1="23" y1="11" x2="17" y2="11"/>
+          </svg>
+        </div>
+        <span class="cg-label">Add call</span>
+      </button>
+
+      <button class="cg-btn" id="btn-mute" onclick="toggleMute()">
+        <div class="cg-icon" id="mute-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </div>
+        <span class="cg-label">Mute</span>
+      </button>
+
+      <button class="cg-btn" id="btn-bt" onclick="toast('Bluetooth: use device audio settings','')">
+        <div class="cg-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6.5 6.5 17.5 17.5 12 23 12 1 17.5 6.5 6.5 17.5"/>
+          </svg>
+        </div>
+        <span class="cg-label">Bluetooth</span>
+      </button>
+
+      <button class="cg-btn" id="btn-spk" onclick="toggleSpeaker()">
+        <div class="cg-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          </svg>
+        </div>
+        <span class="cg-label">Speaker</span>
+      </button>
+
+      <button class="cg-btn" onclick="toast('Keypad not needed for Synora calls','')">
+        <div class="cg-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="4" height="4" rx="1"/>
+            <rect x="10" y="3" width="4" height="4" rx="1"/>
+            <rect x="17" y="3" width="4" height="4" rx="1"/>
+            <rect x="3" y="10" width="4" height="4" rx="1"/>
+            <rect x="10" y="10" width="4" height="4" rx="1"/>
+            <rect x="17" y="10" width="4" height="4" rx="1"/>
+            <rect x="3" y="17" width="4" height="4" rx="1"/>
+            <rect x="10" y="17" width="4" height="4" rx="1"/>
+            <rect x="17" y="17" width="4" height="4" rx="1"/>
+          </svg>
+        </div>
+        <span class="cg-label">Keypad</span>
+      </button>
+
+      <button class="cg-btn" onclick="showCallMore()">
+        <div class="cg-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
+          </svg>
+        </div>
+        <span class="cg-label">More</span>
+      </button>
+
+      <button class="cg-btn vid-only" id="btn-vid" onclick="toggleVid()">
+        <div class="cg-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="23 7 16 12 23 17 23 7"/>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+          </svg>
+        </div>
+        <span class="cg-label">Camera</span>
+      </button>
+    </div>
+
+    <div class="call-end-row">
+      <button class="cb-end" onclick="endCall()" aria-label="End call">
+        <svg viewBox="0 0 24 24" fill="white" width="28" height="28">
+          <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="inc-call">
+  <div></div>
+
+  <div class="inc-rings">
+    <div class="inc-ring"></div>
+    <div class="inc-ring"></div>
+    <div class="inc-ring"></div>
+    <div id="ic-av"></div>
+  </div>
+
+  <div class="inc-info">
+    <div id="ic-nm">Incoming</div>
+    <div id="ic-num"></div>
+    <div id="ic-tp">Voice call · Synora</div>
+  </div>
+
+  <div class="ic-btns">
+    <div class="ic-btn-wrap">
+      <button class="ic-rej" onclick="rejectCall()" aria-label="Decline">
+        <svg viewBox="0 0 24 24" fill="white" width="28" height="28">
+          <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+        </svg>
+      </button>
+      <span class="ic-btn-lbl">Decline</span>
+    </div>
+    <div class="ic-btn-wrap">
+      <button class="ic-acc" onclick="acceptCall()" aria-label="Accept">
+        <svg viewBox="0 0 24 24" fill="white" width="28" height="28">
+          <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+        </svg>
+      </button>
+      <span class="ic-btn-lbl">Accept</span>
+    </div>
+  </div>
+</div>
+
+<div id="call-more-sheet">
+  <div class="cms-bg" onclick="hideCallMore()"></div>
+  <div class="cms-panel">
+    <div class="cms-handle"></div>
+
+    <div class="cms-item" onclick="toast('Recording: coming in next update');hideCallMore()">
+      <div class="cms-item-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="12" cy="12" r="3" fill="currentColor"/>
+        </svg>
+      </div>
+      Record
+    </div>
+
+    <div class="cms-sep"></div>
+
+    <div class="cms-item" onclick="toast('Call on hold');hideCallMore()">
+      <div class="cms-item-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+        </svg>
+      </div>
+      Hold call
+    </div>
+
+    <div class="cms-item" onclick="if(currentPeer){closeProfile();};hideCallMore();showPeerProfile()">
+      <div class="cms-item-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      Contact info
+    </div>
+
+    <div class="cms-item" onclick="endCall();hideCallMore();if(currentPeer&&currentPeer.number){const n=currentPeer.number;setTimeout(()=>openChat(n),400)}">
+      <div class="cms-item-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      Send message
+    </div>
+  </div>
+</div>
+
+<div id="prof-panel">
+  <div class="prof-head">
+    <button class="prof-head-btn" onclick="closeProfile()" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <h2>Profile</h2>
+  </div>
+  <div class="prof-body" id="prof-body"></div>
+
+  <div style="padding:14px 20px;border-top:1px solid var(--border);text-align:center;flex-shrink:0">
+    <div style="font-size:11px;color:var(--text3);line-height:1.9">
+      Questions or feedback?
+      <a href="mailto:yshubhranshu746@gmail.com" style="color:var(--accent2);text-decoration:none">yshubhranshu746@gmail.com</a><br>
+      <span style="opacity:0.65"> Enjoying Synora? —
+        <span style="cursor:pointer;color:var(--accent2);text-decoration:underline" onclick="PrivacyPolicy()">Privacy Policy</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="moverlay" id="key-backup-modal" onclick="if(event.target===this)closeModal('key-backup-modal')">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span>🔑 Private Key Backup</span>
+      <button class="icon-btn" onclick="closeModal('key-backup-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="key-backup-tabs">
+        <button class="kb-tab active" onclick="switchKbTab('export')">Export</button>
+        <button class="kb-tab" onclick="switchKbTab('import')">Import</button>
+        <button class="kb-tab" onclick="switchKbTab('server')">Server Backup</button>
+      </div>
+
+      <div id="kb-export" class="kb-pane">
+        <p class="kb-info">Your private key is encrypted with your password and saved as a file. Store it somewhere safe — it's needed to decrypt your messages on a new device.</p>
+        <div class="fg">
+          <label>Password (to encrypt the backup)</label>
+          <input id="kb-export-pw" type="password" placeholder="Enter your account password" autocomplete="current-password">
+        </div>
+        <button class="btn-primary" onclick="exportKeyBackup()">Download Key Backup</button>
+      </div>
+
+      <div id="kb-import" class="kb-pane" style="display:none">
+        <p class="kb-info">Restore your private key from a backup file. You'll need the password you used when creating the backup.</p>
+        <div class="fg">
+          <label>Backup file (.synkey)</label>
+          <input id="kb-import-file" type="file" accept=".synkey,.json" style="padding:10px 0">
+        </div>
+        <div class="fg">
+          <label>Password</label>
+          <input id="kb-import-pw" type="password" placeholder="Password used when exporting" autocomplete="current-password">
+        </div>
+        <button class="btn-primary" onclick="importKeyBackup()">Restore Key</button>
+      </div>
+
+      <div id="kb-server" class="kb-pane" style="display:none">
+        <p class="kb-info">Store an encrypted backup of your key on the Synora server. Your key is encrypted with your password before upload — the server never sees the plaintext.</p>
+        <div class="fg">
+          <label>Password (to encrypt before upload)</label>
+          <input id="kb-server-pw" type="password" placeholder="Enter your account password" autocomplete="current-password">
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+          <button class="btn-primary" onclick="uploadKeyBackup()" style="flex:1">Upload to Server</button>
+          <button class="btn-primary" onclick="downloadKeyFromServer()" style="flex:1;background:var(--panel3);box-shadow:none;color:var(--text)">Restore from Server</button>
+        </div>
+        <div id="kb-server-status" style="margin-top:10px;font-size:13px;color:var(--text3)"></div>
+      </div>
+
+      <div id="kb-err" class="auth-err" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="moverlay" id="report-modal" onclick="if(event.target===this)closeModal('report-modal')">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span>🚨 Report User</span>
+      <button class="icon-btn" onclick="closeModal('report-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="report-target-num">
+      <input type="hidden" id="report-target-msgid">
+      <div class="fg">
+        <label>What's the issue?</label>
+        <div class="report-reasons" id="report-reasons">
+          <label class="report-reason-opt"><input type="radio" name="rep-reason" value="spam"> Spam</label>
+          <label class="report-reason-opt"><input type="radio" name="rep-reason" value="harassment"> Harassment</label>
+          <label class="report-reason-opt"><input type="radio" name="rep-reason" value="inappropriate_content"> Inappropriate content</label>
+          <label class="report-reason-opt"><input type="radio" name="rep-reason" value="fake_account"> Fake account</label>
+          <label class="report-reason-opt"><input type="radio" name="rep-reason" value="other"> Other</label>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Additional details (optional)</label>
+        <textarea id="report-details" rows="3" maxlength="500" placeholder="Describe what happened…" style="width:100%;padding:10px;border-radius:10px;background:var(--panel3);border:1px solid var(--border);color:var(--text);resize:vertical;font-family:inherit;font-size:14px"></textarea>
+      </div>
+      <button class="btn-primary" onclick="submitReport()">Submit Report</button>
+      <div id="report-err" class="auth-err" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="toast-container"></div>
+
+<script src="/static/js/synora.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/static/sw.js', { scope: '/' })
+      .then(reg => {
+        console.log('[SW] Registered, scope:', reg.scope);
+        navigator.serviceWorker.addEventListener('message', e => {
+          if (e.data?.type === 'notification_click' && e.data.from) {
+            const c = contacts.find(x => x.number === e.data.from);
+            if (c) openChat(c);
+          }
+          if (e.data?.type === 'sync_flush') {
+          }
+        });
+      })
+      .catch(err => console.warn('[SW] Registration failed:', err));
+  });
+}
+
+(function initAds() {
+  try {
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  } catch(e) {
+    var wrap = document.getElementById('sb-ad-wrap');
+    if (wrap) wrap.style.display = 'none';
+  }
+})();
+</script>
+</body>
+</html>
