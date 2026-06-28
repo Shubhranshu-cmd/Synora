@@ -75,7 +75,7 @@ Visit `http://localhost:80`
 ### Manual (Python)
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/synora.git
+git clone https://github.com/Shubhranshu-cmd/Synora.git
 cd synora
 pip install -r requirements.txt
 cp .env.example .env
