@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: synora
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: MSG_ENC_KEY
+        generateValue: true
+      - key: SYNORA_DB
+        value: /tmp/synora.db

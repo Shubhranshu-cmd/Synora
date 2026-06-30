@@ -1,0 +1,98 @@
+{
+  "name": "Synora",
+  "short_name": "Synora",
+  "description": "Private encrypted messaging and calling. End-to-end encrypted by design.",
+  "start_url": "/",
+  "id": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui", "browser"],
+  "background_color": "#0d0d12",
+  "theme_color": "#7C3AED",
+  "orientation": "any",
+  "lang": "en-US",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "Contact.jpg",
+      "sizes": "1080x1911",
+      "type": "image/jpg",
+      "form_factor": "wide",
+      "label": "Synora Desktop — Encrypted Chat"
+    },
+    {
+      "src": "Interface.jpg",
+      "sizes": "1080x1911",
+      "type": "image/jpg",
+      "form_factor": "narrow",
+      "label": "Synora Mobile — Encrypted Chat"
+    },
+    {
+      "src": "Login.jpg",
+      "sizes": "1080x1911",
+      "type": "image/jpg",
+      "form_factor": "wide",
+      "label": "Synora Desktop — Encrypted Chat"
+    },
+    {
+      "src": "Profile.jpg",
+      "sizes": "1080x1911",
+      "type": "image/jpg",
+      "form_factor": "narrow",
+      "label": "Synora Mobile — Encrypted Chat"
+    }
+  ],
+  "categories": ["communication", "social", "productivity"],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "shortcuts": [
+    {
+      "name": "New Message",
+      "short_name": "Message",
+      "description": "Start a new encrypted conversation",
+      "url": "/?action=new_message",
+      "icons": [
+        {
+          "src": "/static/icons/icon-192.svg",
+          "sizes": "192x192",
+          "type": "image/svg"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "share",
+      "url": "url"
+    }
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+synora",
+      "url": "/?number=%s"
+    }
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "iarc_rating_id": "",
+  "handle_links": "preferred"
+}
